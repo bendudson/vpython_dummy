@@ -1,0 +1,17 @@
+Dummy Visual Python module
+
+Intended to allow automated testing of Visual Python codes.
+Uses a logging handler and replacement classes for the VPython interface
+
+Incomplete, work in progress 
+
+Contents
+========
+
+visual.py     The replacement for VPython to be imported by test code
+color.py      Replacement for VPython's visual.color (very incomplete)
+
+test.py       An example code being checked
+runtest.py    Checks the test.py code, prints some diagnostics
+
+handler.py    Custom logging handler to record events

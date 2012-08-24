@@ -29,6 +29,16 @@ class vector(dict, object):
         self['y']    = 0.0
         self['z']    = 0.0
         
+        narg = len(args)
+        if narg > 0:
+            self['x'] = args[0]
+            if narg > 1:
+                self['y'] = args[1]
+            if narg > 2:
+                self['z'] = args[2]
+            self['mag2'] = self['x']**2 + self['y']**2 + self['z']**2
+            self['mag'] = sqrt(self['mag2'])
+
         # Find out whether to record this creation
         try:
             record = kwargs['record']

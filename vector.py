@@ -4,6 +4,24 @@ from numpy import ndarray, arccos, sqrt
 import logging
 log = logging.getLogger('visual')
 
+# Flatten nested lists / tuples
+# From Mike C. Fletcher's BasicTypes library via this post:
+# http://rightfootin.blogspot.co.uk/2006/09/more-on-python-flatten.html
+def flatten(l, ltypes=(list, tuple)):
+    ltype = type(l)
+    l = list(l)
+    i = 0
+    while i < len(l):
+        while isinstance(l[i], ltypes):
+            if not l[i]:
+                l.pop(i)
+                i -= 1
+                break
+            else:
+                l[i:i + 1] = l[i]
+        i += 1
+    return ltype(l)
+
 class vector(ndarray):
     def __new__(self, *args, **kwargs):
         return ndarray.__new__(self, 3)
@@ -13,13 +31,15 @@ class vector(ndarray):
         self[1] = 0.
         self[2] = 0.
         
-        narg = len(args)
-        if narg > 0:
-            self[0] = args[0]
-            if narg > 1:
-                self[1] = args[1]
-                if narg > 2:
-                    self[2] = args[2]
+        if len(args) > 0:
+            if isinstance(args[0], vector):
+                self[0] = args[0].x
+                self[1] = args[0].y
+                self[2] = args[0].z
+            else:
+                # Could be a list or tuple, so flatten
+                for i, v in enumerate(flatten(args)):
+                    self[i] = v
         
         # Find out whether to record this creation
         try:

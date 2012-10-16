@@ -35,7 +35,7 @@ class arrow(dict, object):
         self['up']         = vector(0,1,0, record=False)
 
         for key in kwargs:
-            self[key] = kwargs[key]
+            setattr(self, key, kwargs[key])
             
         log.debug("create", extra={'class':'arrow', 'object':self, 'keywords':kwargs})
         
@@ -43,15 +43,22 @@ class arrow(dict, object):
         try:
             val = self[name]
             log.debug("getattr", extra={'class':'arrow', 'object':self, 'attr':name, 'value':val})
+            return val
         except KeyError:
             log.error("AttributeError: %s", name, extra={'class':'arrow', 'object':self, 'attr':name})
             return None
     
     def __setattr__(self, name, value):
-        self[name] = value
+        # Check if a vector quantity
+        if name in  ['axis', 'pos', 'up']:
+            self[name] = vector(value)  # Ensure it's a vector
+        else:
+            self[name] = value
         if name == 'pos':
             # change x,y,z
-            pass
+            self['x'] = self['pos'].x
+            self['y'] = self['pos'].y
+            self['z'] = self['pos'].z
         log.debug("setattr", extra={'class':'arrow', 'object':self, 'attr':name, 'value':value})
 
 class box(dict, object):
@@ -73,27 +80,35 @@ class box(dict, object):
         self['z']       = 0.0
 
         for key in kwargs:
-            self[key] = kwargs[key]
-        
+            setattr(self, key, kwargs[key])
+
         log.debug("create", extra={'class':'box', 'object':self, 'keywords':kwargs})
         
     def __getattribute__(self, name):
         try:
             val = self[name]
             log.debug("getattr", extra={'class':'box', 'object':self, 'attr':name, 'value':val})
+            return val
         except KeyError:
             log.error("AttributeError: %s", name, extra={'class':'box', 'object':self, 'attr':name})
             return None
     
     def __setattr__(self, name, value):
-        self[name] = value
+        # Check if a vector quantity
+        if name in  ['size', 'axis', 'pos', 'up']:
+            self[name] = vector(value)  # Ensure it's a vector
+        else:
+            self[name] = value
         if name == 'pos':
             # change x,y,z
-            pass
+            self['x'] = self['pos'].x
+            self['y'] = self['pos'].y
+            self['z'] = self['pos'].z
         log.debug("setattr", extra={'class':'box', 'object':self, 'attr':name, 'value':value})
     
 
 class sphere(dict, object):
+    """ Sphere object """
     def __init__(self, **kwargs):
         dict.__init__(self)
         
@@ -109,23 +124,31 @@ class sphere(dict, object):
         self['z']       = 0.0
         
         for key in kwargs:
-            self[key] = kwargs[key]
-            
+            setattr(self, key, kwargs[key])
+        
         log.debug("create", extra={'class':'sphere', 'object':self, 'keywords':kwargs})
 
     def __getattribute__(self, name):
         try:
             val = self[name]
             log.debug("getattr", extra={'class':'sphere', 'object':self, 'attr':name, 'value':val})
+            return val
         except KeyError:
             log.error("AttributeError: %s", name, extra={'class':'sphere', 'object':self, 'attr':name})
             return None
     
     def __setattr__(self, name, value):
-        self[name] = value
+        # Check if a vector quantity
+        if name in  ['axis', 'pos', 'up']:
+            self[name] = vector(value)  # Ensure it's a vector
+        else:
+            self[name] = value
+
         if name == 'pos':
             # change x,y,z
-            pass
+            self['x'] = self['pos'].x
+            self['y'] = self['pos'].y
+            self['z'] = self['pos'].z
         log.debug("setattr", extra={'class':'sphere', 'object':self, 'attr':name, 'value':value})
 
 
